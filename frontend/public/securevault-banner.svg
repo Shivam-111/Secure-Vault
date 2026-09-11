@@ -1,0 +1,52 @@
+<svg width="1400" height="420" viewBox="0 0 1400 420" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1400" y2="420" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#07111F"/>
+      <stop offset="0.5" stop-color="#0B1D2D"/>
+      <stop offset="1" stop-color="#07111F"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="200" y1="80" x2="700" y2="320" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F8D88A"/>
+      <stop offset="1" stop-color="#D7A63A"/>
+    </linearGradient>
+    <linearGradient id="blue" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#7DD3FC"/>
+      <stop offset="1" stop-color="#2563EB"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1400" height="420" rx="28" fill="url(#bg)"/>
+  <circle cx="1160" cy="110" r="215" fill="#102A3B" fill-opacity="0.7"/>
+  <circle cx="1180" cy="120" r="160" fill="#132F46" fill-opacity="0.8"/>
+
+  <g opacity="0.9">
+    <path d="M180 330C180 282.771 216.771 246 264 246H420C467.229 246 504 282.771 504 330V332H180V330Z" fill="#0F2337"/>
+    <path d="M214 248V183C214 147.863 242.863 119 278 119H415C450.137 119 479 147.863 479 183V248H214Z" fill="url(#gold)"/>
+    <path d="M320 150C294.863 150 274 170.863 274 196V208H366V196C366 170.863 345.137 150 320 150Z" fill="#0D1B2B" fill-opacity="0.9"/>
+    <rect x="286" y="208" width="68" height="84" rx="12" fill="#0D1B2B" fill-opacity="0.9"/>
+    <rect x="354" y="208" width="68" height="84" rx="12" fill="#0D1B2B" fill-opacity="0.9"/>
+  </g>
+
+  <g>
+    <rect x="625" y="78" width="300" height="92" rx="18" fill="#0D1F2F" stroke="#2B4F72"/>
+    <circle cx="690" cy="124" r="28" fill="url(#blue)"/>
+    <path d="M678 124L687 133L704 116" stroke="#EAF6FF" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="740" y="138" fill="#F8FAFC" font-family="Segoe UI, Arial, sans-serif" font-size="38" font-weight="700">SecureVault</text>
+  </g>
+
+  <g>
+    <text x="625" y="238" fill="#F8FAFC" font-family="Segoe UI, Arial, sans-serif" font-size="62" font-weight="800">Secure Password Manager</text>
+    <text x="625" y="295" fill="#B7D4EE" font-family="Segoe UI, Arial, sans-serif" font-size="28" font-weight="500">2FA • AES-256 Encryption • JWT Protected Vault</text>
+  </g>
+
+  <g>
+    <rect x="625" y="325" width="154" height="48" rx="12" fill="url(#gold)"/>
+    <text x="652" y="356" fill="#07111F" font-family="Segoe UI, Arial, sans-serif" font-size="20" font-weight="700">React</text>
+
+    <rect x="796" y="325" width="170" height="48" rx="12" fill="#0D1F2F" stroke="#2B4F72"/>
+    <text x="820" y="356" fill="#F8FAFC" font-family="Segoe UI, Arial, sans-serif" font-size="20" font-weight="700">Node.js</text>
+
+    <rect x="983" y="325" width="180" height="48" rx="12" fill="#0D1F2F" stroke="#2B4F72"/>
+    <text x="1012" y="356" fill="#F8FAFC" font-family="Segoe UI, Arial, sans-serif" font-size="20" font-weight="700">MongoDB</text>
+  </g>
+</svg>
