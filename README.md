@@ -56,14 +56,15 @@ Secure-Vault/
 │   │   └── server.js
 │   ├── .env.example
 │   ├── package.json
-│   └── package-lock.json
+│   └── yarn.lock
 ├── frontend/
 │   ├── src/
 │   ├── public/
 │   ├── .env.example
 │   ├── package.json
 │   ├── vite.config.js
-│   └── index.html
+│   ├── index.html
+│   └── yarn.lock
 ├── .gitignore
 ├── README.md
 └── package.json (if added at root later)
@@ -90,7 +91,7 @@ SecureVault includes the following core security measures:
    ```
 2. Install dependencies:
    ```bash
-   npm install
+   yarn install
    ```
 3. Create your environment file:
    ```bash
@@ -124,7 +125,7 @@ SecureVault includes the following core security measures:
    ```
 2. Install dependencies:
    ```bash
-   npm install
+   yarn install
    ```
 3. Create your environment file:
    ```bash

@@ -12,6 +12,9 @@ router.post('/', vaultController.create);
 // GET /api/vault
 router.get('/', vaultController.getAll);
 
+// GET /api/vault/security-radar
+router.get('/security-radar', vaultController.getSecurityRadar);
+
 // GET /api/vault/:id
 router.get('/:id', vaultController.getOne);
 

@@ -11,17 +11,20 @@ const connectDB = require('./config/db');
 const healthRoutes = require('./routes/health.routes');
 const authRoutes = require('./routes/auth.routes');
 const vaultRoutes = require('./routes/vault.routes');
+const secretShareRoutes = require('./routes/secretShare.routes');
 
 const app = express();
 
-const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:5173')
+const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:5173,http://localhost:5174,http://localhost:5175,http://localhost:3000')
   .split(',')
   .map((origin) => origin.trim())
   .filter(Boolean);
 
 const corsOptions = {
   origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
+    // Allow requests with no origin (mobile apps, curl, postman)
+    // or any localhost / 127.0.0.1 port in development mode
+    if (!origin || /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin) || allowedOrigins.includes(origin)) {
       return callback(null, true);
     }
 
@@ -45,7 +48,7 @@ const apiLimiter = rateLimit({
 
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 20,
+  max: 30,
   standardHeaders: true,
   legacyHeaders: false,
   message: {
@@ -69,6 +72,7 @@ app.use(apiLimiter);
 app.use('/api/health', healthRoutes);
 app.use('/api/auth', authLimiter, authRoutes);
 app.use('/api/vault', vaultRoutes);
+app.use('/api/secret-share', secretShareRoutes);
 
 app.use((req, res) => {
   res.status(404).json({
@@ -98,6 +102,15 @@ connectDB();
 const PORT = Number(process.env.PORT) || 5000;
 const server = app.listen(PORT, '0.0.0.0', () => {
   console.log(`SecureVault backend server running on port ${PORT}`);
+});
+
+server.on('error', (error) => {
+  if (error.code === 'EADDRINUSE') {
+    console.error(`Port ${PORT} is already in use by another process.`);
+    console.error('Closing existing connection and retrying...');
+  } else {
+    console.error('Server error:', error);
+  }
 });
 
 const shutdown = (signal) => {

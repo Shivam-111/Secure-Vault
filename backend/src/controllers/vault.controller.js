@@ -88,10 +88,29 @@ const remove = async (req, res) => {
   }
 };
 
+/**
+ * Controller for GET /api/vault/security-radar
+ */
+const getSecurityRadar = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const result = await vaultService.getSecurityRadar(userId);
+    return res.status(200).json(result);
+  } catch (error) {
+    const statusCode = error.statusCode || 500;
+    return res.status(statusCode).json({
+      success: false,
+      message: error.message || 'Internal Server Error'
+    });
+  }
+};
+
 module.exports = {
   create,
   getAll,
   getOne,
   update,
-  remove
+  remove,
+  getSecurityRadar
 };
+

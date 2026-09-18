@@ -257,10 +257,47 @@ const deleteEntry = async (userId, entryId) => {
   };
 };
 
+/**
+ * Perform security radar analysis on all user entries
+ * @param {string} userId
+ */
+const getSecurityRadar = async (userId) => {
+  const { analyzeVaultSecurity } = require('./breachCheck.service');
+  const entries = await VaultEntry.find({ userId });
+  
+  const decryptedItems = entries.map((entry) => {
+    try {
+      const decryptedPassword = decryptPassword({
+        encryptedPassword: entry.encryptedPassword,
+        iv: entry.iv,
+        authTag: entry.authTag
+      });
+      return {
+        _id: entry._id,
+        title: entry.website,
+        siteUrl: entry.website,
+        username: entry.username,
+        password: decryptedPassword
+      };
+    } catch (e) {
+      return null;
+    }
+  }).filter(Boolean);
+
+  const radarData = await analyzeVaultSecurity(decryptedItems);
+
+  return {
+    success: true,
+    data: radarData
+  };
+};
+
 module.exports = {
   createEntry,
   getAllEntries,
   getEntryById,
   updateEntry,
-  deleteEntry
+  deleteEntry,
+  getSecurityRadar
 };
+

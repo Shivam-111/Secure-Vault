@@ -20,6 +20,10 @@ import { useAuth } from '../context/AuthContext';
 import { vaultAPI } from '../services/api';
 import VaultModal from '../components/VaultModal';
 import LockMark from '../components/LockMark';
+import SecurityRadar from '../components/SecurityRadar';
+import ShareSecretModal from '../components/ShareSecretModal';
+import ShareSecretTab from '../components/ShareSecretTab';
+import { Flame } from 'lucide-react';
 
 const siteInitial = (name) => (name || '?').trim().charAt(0).toUpperCase();
 
@@ -35,7 +39,9 @@ const Dashboard = () => {
   const [copyFeedback, setCopyFeedback] = useState('');
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
+  const [activeTab, setActiveTab] = useState('credentials'); // 'credentials', 'radar', 'share'
 
   const fetchVault = async () => {
     setLoading(true);
@@ -180,209 +186,307 @@ const Dashboard = () => {
         </div>
       </motion.div>
 
-      <AnimatePresence>
-        {copyFeedback && (
-          <motion.div
-            className="alert alert-success toast-copy text-xs font-semibold flex items-center justify-center gap-2"
-            initial={{ opacity: 0, y: 20, scale: 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 20, scale: 0.9 }}
-            transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-          >
-            <CheckCircle2 size={16} />
-            <span>{copyFeedback}</span>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Premium Tab Navigation Bar - Explicit Inline Gradients */}
+      <div 
+        style={{
+          background: 'rgba(15, 20, 29, 0.95)',
+          border: '1px solid rgba(245, 158, 11, 0.25)',
+          backdropFilter: 'blur(12px)',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)'
+        }}
+        className="mb-6 flex flex-row items-center justify-start p-1.5 rounded-xl gap-2 overflow-x-auto whitespace-nowrap w-fit max-w-full"
+      >
+        <button
+          onClick={() => setActiveTab('credentials')}
+          style={
+            activeTab === 'credentials'
+              ? {
+                  background: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)',
+                  color: '#000000',
+                  fontWeight: '800',
+                  boxShadow: '0 4px 15px rgba(245, 158, 11, 0.4)',
+                  border: '1px solid #FCD34D'
+                }
+              : {
+                  background: 'rgba(255, 255, 255, 0.05)',
+                  color: '#E2E8F0',
+                  fontWeight: '600',
+                  border: '1px solid rgba(255, 255, 255, 0.1)'
+                }
+          }
+          className="px-4 py-2.5 text-xs rounded-lg transition-all flex items-center gap-2 cursor-pointer shrink-0 whitespace-nowrap"
+        >
+          <Lock size={14} style={{ color: activeTab === 'credentials' ? '#000000' : '#F59E0B' }} />
+          My Credentials ({vaultEntries.length})
+        </button>
 
-      <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
-        <div className="search-wrap">
-          <Search size={16} />
-          <motion.input
-            whileFocus={{ scale: 1.01 }}
-            type="text"
-            className="form-input text-sm py-2 pl-9"
-            placeholder="Search website or username..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div>
+        <button
+          onClick={() => setActiveTab('radar')}
+          style={
+            activeTab === 'radar'
+              ? {
+                  background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
+                  color: '#000000',
+                  fontWeight: '800',
+                  boxShadow: '0 4px 15px rgba(16, 185, 129, 0.4)',
+                  border: '1px solid #6EE7B7'
+                }
+              : {
+                  background: 'rgba(255, 255, 255, 0.05)',
+                  color: '#E2E8F0',
+                  fontWeight: '600',
+                  border: '1px solid rgba(255, 255, 255, 0.1)'
+                }
+          }
+          className="px-4 py-2.5 text-xs rounded-lg transition-all flex items-center gap-2 cursor-pointer shrink-0 whitespace-nowrap"
+        >
+          <Sparkles size={14} style={{ color: activeTab === 'radar' ? '#000000' : '#10B981' }} />
+          Security Radar & Breaches
+        </button>
 
-        <div className="flex items-center gap-3 text-xs text-muted">
-          <span className="stat-pill card-box py-1 px-3">
-            Total: <strong className="text-primary">{vaultEntries.length}</strong>
-          </span>
-          {searchQuery && (
-            <span className="stat-pill card-box py-1 px-3">
-              Matching: <strong className="text-success">{filteredEntries.length}</strong>
-            </span>
-          )}
-        </div>
+        <button
+          onClick={() => setActiveTab('share')}
+          style={
+            activeTab === 'share'
+              ? {
+                  background: 'linear-gradient(135deg, #F97316 0%, #EA580C 100%)',
+                  color: '#000000',
+                  fontWeight: '800',
+                  boxShadow: '0 4px 15px rgba(249, 115, 22, 0.4)',
+                  border: '1px solid #FDBA74'
+                }
+              : {
+                  background: 'rgba(255, 255, 255, 0.05)',
+                  color: '#E2E8F0',
+                  fontWeight: '600',
+                  border: '1px solid rgba(255, 255, 255, 0.1)'
+                }
+          }
+          className="px-4 py-2.5 text-xs rounded-lg transition-all flex items-center gap-2 cursor-pointer shrink-0 whitespace-nowrap"
+        >
+          <Flame size={14} style={{ color: activeTab === 'share' ? '#000000' : '#F97316' }} />
+          One-Time Secret Link
+        </button>
       </div>
 
-      {loading ? (
-        <div className="flex-center p-12 card-box">
-          <div className="spinner"></div>
-          <p className="mt-4 text-sm text-muted">Opening vault metadata…</p>
-        </div>
-      ) : filteredEntries.length === 0 ? (
-        <motion.div
-          className="card-box empty-vault"
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.3 }}
-        >
-          <motion.div
-            className="empty-illustration"
-            animate={{ y: [0, -8, 0] }}
-            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-          >
-            <LockMark size={32} />
-          </motion.div>
-          <h3 className="text-lg font-semibold mb-1">
-            {searchQuery ? 'No matching credentials' : 'Your vault is empty'}
-          </h3>
-          <p className="text-xs text-muted mb-4">
-            {searchQuery
-              ? `No credentials match "${searchQuery}"`
-              : 'Add your first password. It will be sealed with AES-256 encryption.'}
-          </p>
-          {!searchQuery && (
-            <motion.button
-              whileHover={{ scale: 1.04 }}
-              whileTap={{ scale: 0.96 }}
-              onClick={handleOpenAddModal}
-              className="btn btn-primary text-sm inline-flex items-center gap-2"
-            >
-              <Plus size={16} />
-              Add first credential
-            </motion.button>
-          )}
-        </motion.div>
-      ) : (
-        <motion.div className="vault-grid" layout>
+      {/* Security Health Radar Dedicated Tab */}
+      {activeTab === 'radar' && (
+        <SecurityRadar onRefreshVault={fetchVault} />
+      )}
+
+      {/* One-Time Secret Link Dedicated Tab */}
+      {activeTab === 'share' && (
+        <ShareSecretTab />
+      )}
+
+      {/* My Credentials Dedicated Tab */}
+      {activeTab === 'credentials' && (
+        <>
           <AnimatePresence>
-            {filteredEntries.map((entry) => {
-              const isPasswordRevealed = !!decryptedPasswords[entry._id];
-              const isDecrypting = decryptingId === entry._id;
-              const displayedPassword = isPasswordRevealed ? decryptedPasswords[entry._id] : '••••••••••••';
-
-              return (
-                <motion.div
-                  key={entry._id}
-                  layout
-                  initial={{ opacity: 0, y: 15 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
-                  transition={{ duration: 0.3 }}
-                  className={`vault-item-card flex flex-col md:flex-row justify-between items-start md:items-center p-4 card-box gap-4${
-                    isPasswordRevealed ? ' revealed' : ''
-                  }`}
-                >
-                  <div className="flex items-start gap-3 flex-1">
-                    <motion.div
-                      className="site-avatar"
-                      whileHover={{ scale: 1.08, rotate: 3 }}
-                      aria-hidden="true"
-                    >
-                      {siteInitial(entry.website)}
-                    </motion.div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1 flex-wrap">
-                        <h3 className="text-base font-bold text-white">{entry.website}</h3>
-                        <span className="badge badge-encrypted text-xs flex items-center gap-1">
-                          <Sparkles size={10} />
-                          AES-256
-                        </span>
-                      </div>
-                      <div className="text-xs text-muted flex flex-wrap gap-3">
-                        <span>
-                          User: <strong className="text-white">{entry.username}</strong>
-                        </span>
-                        {entry.notes && (
-                          <span>
-                            Notes: <em>{entry.notes}</em>
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex flex-wrap items-center gap-2 w-full md:w-auto justify-end">
-                    <div className="password-pill font-mono">
-                      <span>{isDecrypting ? 'Decrypting…' : displayedPassword}</span>
-                      <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={() => handleToggleShowPassword(entry._id)}
-                        disabled={isDecrypting}
-                        className="btn-ghost flex items-center gap-1 cursor-pointer"
-                      >
-                        {isPasswordRevealed ? (
-                          <>
-                            <EyeOff size={12} />
-                            Hide
-                          </>
-                        ) : (
-                          <>
-                            <Eye size={12} />
-                            Reveal
-                          </>
-                        )}
-                      </motion.button>
-                    </div>
-
-                    <motion.button
-                      whileHover={{ scale: 1.04 }}
-                      whileTap={{ scale: 0.96 }}
-                      onClick={() => handleCopyText(entry.username, 'username')}
-                      className="btn btn-secondary text-xs py-1 px-2.5 flex items-center gap-1"
-                      title="Copy Username"
-                    >
-                      <Copy size={12} />
-                      Copy user
-                    </motion.button>
-
-                    {isPasswordRevealed && (
-                      <motion.button
-                        whileHover={{ scale: 1.04 }}
-                        whileTap={{ scale: 0.96 }}
-                        onClick={() => handleCopyText(decryptedPasswords[entry._id], 'password')}
-                        className="btn btn-secondary text-xs py-1 px-2.5 flex items-center gap-1"
-                        title="Copy Password"
-                      >
-                        <Copy size={12} />
-                        Copy pass
-                      </motion.button>
-                    )}
-
-                    <motion.button
-                      whileHover={{ scale: 1.04 }}
-                      whileTap={{ scale: 0.96 }}
-                      onClick={() => handleOpenEditModal(entry)}
-                      className="btn btn-secondary text-xs py-1 px-2.5 flex items-center gap-1"
-                      title="Edit Credential"
-                    >
-                      <Edit2 size={12} />
-                      Edit
-                    </motion.button>
-
-                    <motion.button
-                      whileHover={{ scale: 1.04 }}
-                      whileTap={{ scale: 0.96 }}
-                      onClick={() => handleDeleteEntry(entry._id, entry.website)}
-                      className="btn btn-danger text-xs py-1 px-2.5 flex items-center gap-1"
-                      title="Delete Credential"
-                    >
-                      <Trash2 size={12} />
-                      Delete
-                    </motion.button>
-                  </div>
-                </motion.div>
-              );
-            })}
+            {copyFeedback && (
+              <motion.div
+                className="alert alert-success toast-copy text-xs font-semibold flex items-center justify-center gap-2"
+                initial={{ opacity: 0, y: 20, scale: 0.9 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 20, scale: 0.9 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+              >
+                <CheckCircle2 size={16} />
+                <span>{copyFeedback}</span>
+              </motion.div>
+            )}
           </AnimatePresence>
-        </motion.div>
+
+          <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
+            <div className="search-wrap">
+              <Search size={16} />
+              <motion.input
+                whileFocus={{ scale: 1.01 }}
+                type="text"
+                className="form-input text-sm py-2 pl-9"
+                placeholder="Search website or username..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+
+            <div className="flex items-center gap-3 text-xs text-muted">
+              <span className="stat-pill card-box py-1 px-3">
+                Total Credentials: <strong className="text-primary">{vaultEntries.length}</strong>
+              </span>
+              {searchQuery && (
+                <span className="stat-pill card-box py-1 px-3">
+                  Matching: <strong className="text-success">{filteredEntries.length}</strong>
+                </span>
+              )}
+            </div>
+          </div>
+
+          {loading ? (
+            <div className="flex-center p-12 card-box">
+              <div className="spinner"></div>
+              <p className="mt-4 text-sm text-muted">Opening vault metadata…</p>
+            </div>
+          ) : filteredEntries.length === 0 ? (
+            <motion.div
+              className="card-box empty-vault"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.3 }}
+            >
+              <motion.div
+                className="empty-illustration"
+                animate={{ y: [0, -8, 0] }}
+                transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+              >
+                <LockMark size={32} />
+              </motion.div>
+              <h3 className="text-lg font-semibold mb-1">
+                {searchQuery ? 'No matching credentials' : 'Your vault is empty'}
+              </h3>
+              <p className="text-xs text-muted mb-4">
+                {searchQuery
+                  ? `No credentials match "${searchQuery}"`
+                  : 'Add your first password. It will be sealed with AES-256 encryption.'}
+              </p>
+              {!searchQuery && (
+                <motion.button
+                  whileHover={{ scale: 1.04 }}
+                  whileTap={{ scale: 0.96 }}
+                  onClick={handleOpenAddModal}
+                  className="btn btn-primary text-sm inline-flex items-center gap-2"
+                >
+                  <Plus size={16} />
+                  Add first credential
+                </motion.button>
+              )}
+            </motion.div>
+          ) : (
+            <motion.div className="vault-grid" layout>
+              <AnimatePresence>
+                {filteredEntries.map((entry) => {
+                  const isPasswordRevealed = !!decryptedPasswords[entry._id];
+                  const isDecrypting = decryptingId === entry._id;
+                  const displayedPassword = isPasswordRevealed ? decryptedPasswords[entry._id] : '••••••••••••';
+
+                  return (
+                    <motion.div
+                      key={entry._id}
+                      layout
+                      initial={{ opacity: 0, y: 15 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
+                      transition={{ duration: 0.3 }}
+                      className={`vault-item-card flex flex-col md:flex-row justify-between items-start md:items-center p-4 card-box gap-4${
+                        isPasswordRevealed ? ' revealed' : ''
+                      }`}
+                    >
+                      <div className="flex items-start gap-3 flex-1">
+                        <motion.div
+                          className="site-avatar"
+                          whileHover={{ scale: 1.08, rotate: 3 }}
+                          aria-hidden="true"
+                        >
+                          {siteInitial(entry.website)}
+                        </motion.div>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-1 flex-wrap">
+                            <h3 className="text-base font-bold text-white">{entry.website}</h3>
+                            <span className="badge badge-encrypted text-xs flex items-center gap-1">
+                              <Sparkles size={10} />
+                              AES-256
+                            </span>
+                          </div>
+                          <div className="text-xs text-muted flex flex-wrap gap-3">
+                            <span>
+                              User: <strong className="text-white">{entry.username}</strong>
+                            </span>
+                            {entry.notes && (
+                              <span>
+                                Notes: <em>{entry.notes}</em>
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-wrap items-center gap-2 w-full md:w-auto justify-end">
+                        <div className="password-pill font-mono">
+                          <span>{isDecrypting ? 'Decrypting…' : displayedPassword}</span>
+                          <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={() => handleToggleShowPassword(entry._id)}
+                            disabled={isDecrypting}
+                            className="btn-ghost flex items-center gap-1 cursor-pointer"
+                          >
+                            {isPasswordRevealed ? (
+                              <>
+                                <EyeOff size={12} />
+                                Hide
+                              </>
+                            ) : (
+                              <>
+                                <Eye size={12} />
+                                Reveal
+                              </>
+                            )}
+                          </motion.button>
+                        </div>
+
+                        <motion.button
+                          whileHover={{ scale: 1.04 }}
+                          whileTap={{ scale: 0.96 }}
+                          onClick={() => handleCopyText(entry.username, 'username')}
+                          className="btn btn-secondary text-xs py-1 px-2.5 flex items-center gap-1"
+                          title="Copy Username"
+                        >
+                          <Copy size={12} />
+                          Copy user
+                        </motion.button>
+
+                        {isPasswordRevealed && (
+                          <motion.button
+                            whileHover={{ scale: 1.04 }}
+                            whileTap={{ scale: 0.96 }}
+                            onClick={() => handleCopyText(decryptedPasswords[entry._id], 'password')}
+                            className="btn btn-secondary text-xs py-1 px-2.5 flex items-center gap-1"
+                            title="Copy Password"
+                          >
+                            <Copy size={12} />
+                            Copy pass
+                          </motion.button>
+                        )}
+
+                        <motion.button
+                          whileHover={{ scale: 1.04 }}
+                          whileTap={{ scale: 0.96 }}
+                          onClick={() => handleOpenEditModal(entry)}
+                          className="btn btn-secondary text-xs py-1 px-2.5 flex items-center gap-1"
+                          title="Edit Credential"
+                        >
+                          <Edit2 size={12} />
+                          Edit
+                        </motion.button>
+
+                        <motion.button
+                          whileHover={{ scale: 1.04 }}
+                          whileTap={{ scale: 0.96 }}
+                          onClick={() => handleDeleteEntry(entry._id, entry.website)}
+                          className="btn btn-danger text-xs py-1 px-2.5 flex items-center gap-1"
+                          title="Delete Credential"
+                        >
+                          <Trash2 size={12} />
+                          Delete
+                        </motion.button>
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </AnimatePresence>
+            </motion.div>
+          )}
+        </>
       )}
 
       <VaultModal
@@ -391,6 +495,11 @@ const Dashboard = () => {
         onSave={handleSaveModal}
         initialData={editingItem}
         isEditing={!!editingItem}
+      />
+
+      <ShareSecretModal
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
       />
     </div>
   );
