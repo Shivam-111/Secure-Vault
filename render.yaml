@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: securevault-backend
+    runtime: node
+    rootDir: backend
+    buildCommand: yarn install --frozen-lockfile
+    startCommand: yarn start

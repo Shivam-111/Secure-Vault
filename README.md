@@ -157,6 +157,17 @@ npm run dev
 - Frontend: http://localhost:5173
 - Backend health check: http://localhost:5000/api/health
 
+## Render Deployment
+
+For the backend Render service, use these settings:
+
+- Root Directory: `backend`
+- Build Command: `yarn install --frozen-lockfile`
+- Start Command: `yarn start`
+
+The start command must not be `node server.js`; the backend entry point is `src/server.js`.
+The repository also includes `render.yaml` with these settings for Blueprint deployments.
+
 ## Main API Routes
 
 ### Authentication
